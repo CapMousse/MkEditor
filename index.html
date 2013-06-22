@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+    <head>
+        <title>MkEditor</title>
+        <link rel="stylesheet" href="style/style.css">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <meta charset="UTF8">
+    </head>
+    <body ng-app="MkEditor">
+        <div id="layout" class="pure-g-r" ng-controller="EditorController">
+            <div id="buttons" class="pure-u-1">
+                <a href="#" class="pure-button file">
+                    <input type="file" id="fileInput">
+                    <span><i class="icon-file"></i> Open file</span>
+                </a>
+                <a href="#" class="pure-button pure-button-primary" id="saveMarkdown"><i class="icon-save"></i> Save as Markdown</a>
+                <a href="#" class="pure-button pure-button-danger" id="saveHtml"><i class="icon-html5"></i> Save as HTML</a>
+                <a href='#' class="fullscreen" ng-click="setFullscreen()"><i class="icon-resize-small" ng-show="fullscreen"></i> <i class="icon-resize-full" ng-hide="fullscreen"></i></a>
+            </div>
+            <div id="editor" class="pure-u-1-2">
+                <textarea ng-model="content" ng-change="saveContent()" spellcheck="false"></textarea>
+            </div>
+            <div id="preview" class="pure-u-1-2">
+                <div class="content" ng-bind-html-unsafe="content | markdown"></div>
+            </div>
+        </div>
+        <div class="credits">Created by <a href="https://twitter.com/capitainemousse">Jeremy Barbe</a> - <a href="https://github.com/CapMousse/AngularTracker">Fork me on github</a></div>
+        <script src="components/showdown/showdown.min.js"></script>
+        <script src="components/rainbow/rainbow.min.js"></script>
+        <script src="components/angular/angular.min.js"></script>
+        <script src="components/app.js"></script>
+    </body>
+</html>
