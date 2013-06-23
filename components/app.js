@@ -21,15 +21,16 @@ angular.module('MkEditor', [])
 })
 
 .service('FileService', function() {
+    var url = window.URL || window.webkitURL;
+
     this.saveAsFile = function(content, type, name) {
         if (Blob === void(0)) {
             return alert("Your browser don't support javascript file saving");
         }
 
         var blobFile = new Blob([content], {type: type});
-        name = name || (new Date()).getTime();
 
-        return blobFile;
+        return url.createObjectURL(blobFile);
     }
 })
 
@@ -69,16 +70,21 @@ angular.module('MkEditor', [])
         LocalStorageService.set('MkEditorContent', $scope.content);
 
         var name = $scope.content.split("\n")[0].trim().replace('#', '');
-        var markdownFile = FileService.saveAsFile($scope.content, 'text/plain');
-
         var converter = new Showdown.converter();
-        var htmlFile = FileService.saveAsFile(converter.makeHtml($scope.content), 'text/plain');
 
-        saveMarkdownButton.download = name+".md";
-        saveHtmlButton.download = name+".html";
+        var markdownContent = $scope.content;
+        var htmlContent = converter.makeHtml($scope.content);
 
-        saveMarkdownButton.href = window.URL.createObjectURL(markdownFile);
-        saveHtmlButton.href = window.URL.createObjectURL(htmlFile);
+        if (saveMarkdownButton.download){
+            saveMarkdownButton.download = name+".md";
+            saveHtmlButton.download = name+".html";
+
+            saveMarkdownButton.href = FileService.saveAsFile(markdownContent, 'text/plain');
+            saveHtmlButton.href = FileService.saveAsFile(htmlContent, 'text/plain');
+        } else {
+            saveMarkdownButton.href = "data:text/plain;charset=utf-8," + encodeURI(markdownContent);
+            saveHtmlButton.href = "data:text/html;charset=utf-8," + encodeURI(htmlContent);
+        }
     };
 
     $scope.setFullscreen = function(){
